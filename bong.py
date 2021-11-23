@@ -66,11 +66,11 @@ while(True):
             elif now_rsi >= 33 and lower28[i] == True and total < 95000 :
                 buy(coinlist[i])
                 lower28[i] = False
-            elif now_rsi >= 60 and higher70[i] == False and cur_price >= profit_price :
+            elif now_rsi >= 60 and cur_price >= profit_price :
                 sell(coinlist[i])
-                higher70[i] = True
-            else now_rsi <= 50 :
-                higher70[i] = False
+#                 higher70[i] = True
+#             else now_rsi <= 50 :
+#                 higher70[i] = False
             time.sleep(0.1)
             
         except Exception as e:
