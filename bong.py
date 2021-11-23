@@ -32,12 +32,6 @@ def buy(coin):
     money = upbit.get_balance("KRW") 
     if money > 101000 : 
         res = upbit.buy_market_order(coin, 100000) 
-#     elif money < 100000: 
-#         res = upbit.buy_market_order(coin, money*0.9) 
-#     elif money < 250000 : 
-#         res = upbit.buy_market_order(coin, money*0.6) 
-#     else : 
-#         res = upbit.buy_market_order(coin, money*0.4) 
     return
 
 # 시장가 매도 함수 
@@ -47,8 +41,6 @@ def sell(coin):
     total = amount * cur_price 
     if total < 1000000 : 
         res = upbit.sell_market_order(coin, amount) 
-#     elif total > 1000000: 
-#         res = upbit.sell_market_order(coin, amount*0.5) 
     else : 
         res = upbit.sell_market_order(coin, amount*0,7) 
     return
@@ -60,20 +52,27 @@ for i in range(len(coinlist)):
 
 while(True):
     for i in range(len(coinlist)):
-        data = pyupbit.get_ohlcv(ticker=coinlist[i], interval="minute3")
-        now_rsi = rsi(data, 14).iloc[-1]
-        print(coinlist[i], "현재시간: ", datetime.datetime.now(), "< RSI > :", now_rsi)
-        print()
-        # balances = upbit.get_balances()
-        # print("현재시간: ", datetime.datetime.now(), balances)
-        if now_rsi <= 28 :
-            lower28[i] = True
-        elif now_rsi >= 33 and lower28[i] == True:
-            buy(coinlist[i])
-            lower28[i] = False
-        elif now_rsi >= 60 and higher70[i] == False:
-            sell(coinlist[i])
-            higher70[i] = True
-        else now_rsi <= 50 :
-            higher70[i] = False
-    time.sleep(1)
+        try :
+            data = pyupbit.get_ohlcv(ticker=coinlist[i], interval="minute3")
+            now_rsi = rsi(data, 14).iloc[-1]
+            amount = upbit.get_balance(coinlist[i])
+            av_buy = float(upbit.get_avg_buy_price(coinlist[i]))
+            profit_price = round(av_buy*1.02, 4)   
+            total = amount * cur_price
+            print(coinlist[i], "< RSI > :", now_rsi)
+
+            if now_rsi <= 30 :
+                lower28[i] = True
+            elif now_rsi >= 33 and lower28[i] == True and total < 95000 :
+                buy(coinlist[i])
+                lower28[i] = False
+            elif now_rsi >= 60 and higher70[i] == False and cur_price >= profit_price :
+                sell(coinlist[i])
+                higher70[i] = True
+            else now_rsi <= 50 :
+                higher70[i] = False
+            time.sleep(0.1)
+            
+        except Exception as e:
+            print(e)
+            time.sleep(0.1)  
