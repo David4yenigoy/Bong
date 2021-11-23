@@ -39,10 +39,10 @@ def sell(coin):
     amount = upbit.get_balance(coin) 
     cur_price = pyupbit.get_current_price(coin) 
     total = amount * cur_price 
-    if total < 1000000 : 
+    if total < 500000 : 
         res = upbit.sell_market_order(coin, amount) 
     else : 
-        res = upbit.sell_market_order(coin, amount*0,7) 
+        res = upbit.sell_market_order(coin, amount*0.5) 
     return
 
 # initiate
@@ -65,12 +65,13 @@ while(True):
                 lower28[i] = True
             elif now_rsi >= 33 and lower28[i] == True and total < 95000 :
                 buy(coinlist[i])
-                lower28[i] = False
+                print(coinlist[i], datetime.datetime.now(), "RSI3 Buy")
             elif now_rsi >= 60 and cur_price >= profit_price :
                 sell(coinlist[i])
-#                 higher70[i] = True
-#             else now_rsi <= 50 :
-#                 higher70[i] = False
+                print(coinlist[i], datetime.datetime.now(), "RSI3 Sell")
+                lower28[i] = False
+            else now_rsi >= 50 :
+                lower28[i] = False
             time.sleep(0.1)
             
         except Exception as e:
