@@ -2,12 +2,6 @@ import pyupbit
 import pandas 
 import datetime 
 import time
-from pytz import timezone
-
-import pyupbit 
-import pandas 
-import datetime 
-import time
 
 access = "access key"   # access key
 secret = "secret key"   # secret key
