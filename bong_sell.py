@@ -44,9 +44,9 @@ while(True):
         coins.append('KRW-'+ a )
     coins.remove('KRW-KRW')
     coins.remove('KRW-VTHO')
-    coins.remove('KRW-XYM')
+    # coins.remove('KRW-XYM')
     coins.remove('KRW-APENFT')
-    print(now, coins)
+    print(datetime.datetime.now(), coins)
 
     for c in range(len(coins)) :
 #         data = pyupbit.get_ohlcv(ticker=coins[c], interval="minute3")
