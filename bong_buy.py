@@ -30,8 +30,8 @@ def buy(coin):
     total = amount * cur_price
     print(coin, datetime.datetime.now(), "Buy")
     
-    if money > 501000 and total < 500000 : 
-        res = upbit.buy_market_order(coin, 500000) 
+    if money > 301000 and total < 300000 : 
+        res = upbit.buy_market_order(coin, 300000) 
     return
 
 def buy2(coin): 
@@ -61,10 +61,10 @@ for i in range(len(coinlist)):
 while(True):
     for i in range(len(coinlist)):
         try :
-            data = pyupbit.get_ohlcv(ticker=coinlist[i], interval="minute3")
+            data = pyupbit.get_ohlcv(ticker=coinlist[i], interval="minute30")
             now_rsi = rsi(data, 14).iloc[-1]
-            data2 = pyupbit.get_ohlcv(ticker=coinlist[i], interval="minute30")
-            now_rsi60 = rsi(data2, 14).iloc[-1]
+#             data2 = pyupbit.get_ohlcv(ticker=coinlist[i], interval="minute60")
+#             now_rsi60 = rsi(data2, 14).iloc[-1]
 
             if now_rsi <= 28 :
                 lower28[i] = True
@@ -72,10 +72,10 @@ while(True):
             elif now_rsi >= 30 and lower28[i] == True and higher70[i] == False :
                 buy(coinlist[i])
                 higher70[i] = True
-            elif now_rsi60 >= 65 and now_rsi60 <=70 and higher2[i] == False :
-                buy2(coinlist[i])
+            elif now_rsi >= 65 and now_rsi <=70 and higher2[i] == False :
+                buy(coinlist[i])
                 higher2[i] = True
-            elif now_rsi60 <= 50 and higher2[i] == True :
+            elif now_rsi <= 50 and higher2[i] == True :
                 higher2[i] = False
                                 
             elif now_rsi >= 50 :
