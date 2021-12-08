@@ -28,35 +28,59 @@ def buy(coin):
     amount = upbit.get_balance(coin)
     cur_price = pyupbit.get_current_price(coin) 
     total = amount * cur_price
-    print(coin, datetime.datetime.now(timezone('Asia/Seoul')), "Buy")
+    print(coin, datetime.datetime.now(), "Buy")
     
     if money > 501000 and total < 500000 : 
         res = upbit.buy_market_order(coin, 500000) 
     return
 
+def buy2(coin): 
+    money = upbit.get_balance("KRW") 
+    amount = upbit.get_balance(coin)
+    cur_price = pyupbit.get_current_price(coin) 
+    total = amount * cur_price
+    print(coin, datetime.datetime.now(), "Buy")
+    
+    if money > 100500 and total < 400000 : 
+        res = upbit.buy_market_order(coin, 100000) 
+    return
+
+
 # initiate
 # 이용할 코인 리스트 
 coinlist = ["KRW-BTC", "KRW-XRP", "KRW-ETC", "KRW-ETH", "KRW-POWR", "KRW-CRO", "KRW-VET", "KRW-AQT", "KRW-AXS", "KRW-EOS", "KRW-BORA", "KRW-PLA", "KRW-WAXP", "KRW-MANA", "KRW-SAND", "KRW-HIVE", "KRW-HUNT", "KRW-DOGE", "KRW-CHZ", "KRW-DOT"] # Coin ticker 추가 
 lower28 = []
+higher70 = []
+higher2 = []
 
 for i in range(len(coinlist)):
     lower28.append(False)
+    higher70.append(False)
+    higher2.append(True)
 
 while(True):
     for i in range(len(coinlist)):
         try :
             data = pyupbit.get_ohlcv(ticker=coinlist[i], interval="minute3")
             now_rsi = rsi(data, 14).iloc[-1]
+            data2 = pyupbit.get_ohlcv(ticker=coinlist[i], interval="minute30")
+            now_rsi60 = rsi(data2, 14).iloc[-1]
 
             if now_rsi <= 28 :
                 lower28[i] = True
+                                
+            elif now_rsi >= 30 and lower28[i] == True and higher70[i] == False :
                 buy(coinlist[i])
-                
-            elif now_rsi <= 20 and lower28[i] == True :
-                buy(coinlist[i])
-                
-            elif now_rsi >= 60 :
+                higher70[i] = True
+            elif now_rsi60 >= 65 and now_rsi60 <=70 and higher2[i] == False :
+                buy2(coinlist[i])
+                higher2[i] = True
+            elif now_rsi60 <= 50 and higher2[i] == True :
+                higher2[i] = False
+                                
+            elif now_rsi >= 50 :
                 lower28[i] = False
+                higher70[i] = False
                 
             time.sleep(0.1)
             
